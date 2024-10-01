@@ -12,6 +12,10 @@ from multiprocessing import Manager
 import threading
 import time
 
+# import QAbstractItemView
+from PyQt5.QtWidgets import QAbstractItemView
+
+
 load_dotenv()
 sys.path.append(os.getcwd())
 
@@ -83,10 +87,31 @@ class TableWindow(QMainWindow):
         self.chart_modes=["employees", "industries", "funding_status"]
         self.setGeometry(100, 100, 1400, 800)
 
+        self.table_headers = {
+            "company_name": "TEXT",
+            "cb_rank": "INTEGER",
+            "employees": "INTEGER",
+            "short_description": "TEXT",
+            "industries": "TEXT",
+            "founded_date": "DATE",
+            "long_description": "TEXT",
+            "headquarters_location": "TEXT",
+            "last_funding_type": "TEXT",
+            "most_recent_valuation": "TEXT",
+            "funding_status": "TEXT",
+            "acquisition_status": "TEXT",
+            "actively_hiring": "TEXT",
+            "linkedin": "TEXT",
+            "estimated_revenue": "TEXT",
+            "website": "TEXT",
+            "total_funding_amount": "DECIMAL(15, 2)",
+            "primary_key": "SERIAL PRIMARY KEY"
+        }  
+
         self.update_index=0
         self.timer=QTimer(self)
         self.timer.timeout.connect(self.periodic_updates)
-        self.timer.start(2000)
+        self.timer.start(100) # Timer Duration
 
         main_widget = QWidget()
         main_layout = QHBoxLayout()
@@ -135,12 +160,6 @@ class TableWindow(QMainWindow):
         self.button3 = QPushButton("Clear Ranks")
         self.button3.clicked.connect(self.clear_ranks)
         left_layout.addWidget(self.button3)
-
-        # add button to print ranks
-        self.button4 = QPushButton("Print Ranks")
-        self.button4.clicked.connect(self.print_ranks)
-        left_layout.addWidget(self.button4)
-        
 
         # Create right panel (table)
         right_panel = QWidget()
@@ -210,7 +229,7 @@ class TableWindow(QMainWindow):
         # update chart
         if (self.high_rank_rows!=[] or self.prev_high_rank_rows!=[]) and (self.high_rank_rows!=self.prev_high_rank_rows):
             self.refresh_chart()
-        self.prev_high_rank_rows=self.high_rank_rows
+        self.prev_high_rank_rows=self.high_rank_rows.copy()
 
 
 
@@ -234,12 +253,16 @@ class TableWindow(QMainWindow):
         self.table.setRowCount(len(self.records))
         self.table.setColumnCount(len(models.crunchbase_fields.keys())+1)
 
-        headers = ["rank"]+list(models.crunchbase_fields.keys())
+        data_headers = ["rank"]+list(models.crunchbase_fields.keys())
+        headers=["rank"]+list(self.table_headers.keys())
         self.table.setHorizontalHeaderLabels(headers)
 
         for i, row in enumerate(self.records):
             self.table.setItem(i, 0, NumericTableWidgetItem(0))
             for j, item in enumerate(row):
+                header=headers[j+1]
+                data_index=data_headers.index(header)
+                item=row[data_index-1]
                 if isinstance(item, (int, float)):
                     table_item = NumericTableWidgetItem(item)
                 else:
@@ -250,19 +273,26 @@ class TableWindow(QMainWindow):
                 
                 self.table.setItem(i, j+1, table_item)
 
-
         self.cb_rank_column = headers.index('cb_rank')
         self.employee_count_column = headers.index('employees')
         self.industries_column = headers.index('industries')
         self.funding_series = headers.index('funding_status')
         self.company_name_column = headers.index('company_name')
-        self.RANK_column=headers.index('rank')
+        self.long_description_column = headers.index('long_description')
+        self.RANK_column=headers.index('rank')  
         self.table.setSortingEnabled(True)
         self.table.sortItems(self.cb_rank_column)
 
         self.table.resizeColumnsToContents()
         self.table.verticalHeader().setFixedWidth(50)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        #self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setColumnWidth(self.company_name_column, 200) 
+        self.table.setColumnWidth(self.long_description_column, 200)
+
         self.table.horizontalHeader().sectionClicked.connect(self.refresh_chart)
 
     def refresh_chart(self):
@@ -277,7 +307,10 @@ class TableWindow(QMainWindow):
                 values_keys_list=sorted(list(zip(values, keys)), reverse=True)
                 values, keys=zip(*values_keys_list[:x])
 
-                self.pie_chart.update_chart(keys, values, "Industry")
+                if self.high_rank_rows!=[]:
+                    self.pie_chart.update_chart(keys, values, "Industry, Rank 5 companies")
+                else:
+                    self.pie_chart.update_chart(keys, values, "Industry")
             case "funding_status":
                 keys, values=self.loop_over_rows(self.process_funding_status)
                 self.pie_chart.update_chart(keys, values, "Total Funding")
@@ -335,11 +368,16 @@ class TableWindow(QMainWindow):
 
         # loop over table rows and clear the ranks
         for row in range(self.table.rowCount()):
+            index = self.table.model().index(row, 0)
             self.table.setItem(row, 0, NumericTableWidgetItem(0))
+            self.table.model().setData(index, 0)
+            self.table.item(row, 0).setBackground(Qt.darkRed)
 
-    def print_ranks(self):
-        for row in range(self.table.rowCount()):
-            print(self.table.item(row, 0).value)
+        # loop over table rows and clear the ranks
+        # time.sleep(0.1)
+        # for row in range(self.table.rowCount()):
+        #     self.table.setItem(row, 0, NumericTableWidgetItem(0))
+
 
 
 if __name__ == "__main__":
@@ -371,3 +409,8 @@ if __name__ == "__main__":
     window = TableWindow(cur, records, industry_records, shared_dict)
     window.show()
     sys.exit(app.exec_())
+
+
+
+
+ 

@@ -31,6 +31,28 @@ crunchbase_fields = {
     "total_funding_amount": "DECIMAL(15, 2)"
 }   
 
+
+# crunchbase_fields = {
+#     "primary_key": "SERIAL PRIMARY KEY",
+#     "company_name": "TEXT",
+#     "cb_rank": "INTEGER",
+#     "employees": "INTEGER",
+#     "short_description": "TEXT",
+#     "industries": "TEXT",
+#     "founded_date": "DATE",
+#     "long_description": "TEXT",
+#     "headquarters_location": "TEXT",
+#     "last_funding_type": "TEXT",
+#     "most_recent_valuation": "TEXT",
+#     "funding_status": "TEXT",
+#     "acquisition_status": "TEXT",
+#     "actively_hiring": "TEXT",
+#     "linkedin": "TEXT",
+#     "estimated_revenue": "TEXT",
+#     "website": "TEXT",
+#     "total_funding_amount": "DECIMAL(15, 2)"
+# }   
+
 industry_connections_fields = {
     "crunchbase_primary_key": "INTEGER",
     "industry_name": "TEXT",
