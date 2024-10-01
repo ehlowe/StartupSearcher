@@ -14,6 +14,19 @@ import time
 
 # import QAbstractItemView
 from PyQt5.QtWidgets import QAbstractItemView
+from PyQt5.QtGui import QColor, QFont
+
+
+from dataclasses import dataclass
+
+@dataclass
+class customColors:
+    green = QColor(33, 255, 129)#(84, 255, 110)
+    yellow_green = QColor(204, 255, 84)
+    yellow = QColor(255, 249, 84)
+    orange = QColor(255, 189, 84)
+    red = QColor(255, 84, 84)
+
 
 
 load_dotenv()
@@ -62,8 +75,9 @@ class PieChartWidget(FigureCanvas):
         legend_ax.axis('off')
         legend = legend_ax.legend(wedges, labels, title=title, loc="center left")
         
-        # Adjust the legend font size if needed
-        plt.setp(legend.get_texts(), fontsize='small')
+        # Adjust the legend font size to 15 and make it bold, make title bold and size 20
+        plt.setp(legend.get_texts(), fontsize=15, fontweight='bold')
+        plt.setp(legend.get_title(), fontsize=20, fontweight='bold')
         
         self.figure.tight_layout()
         self.draw()
@@ -71,6 +85,9 @@ class PieChartWidget(FigureCanvas):
 class TableWindow(QMainWindow):
     def __init__(self, cur, records, industry_records, shared_dict):
         super().__init__()
+        big_font=QFont()
+        big_font.setPointSize(15)
+        big_font.setBold(True)
         self.ai_thread=None
         self.cur=cur
         self.records = records
@@ -130,6 +147,7 @@ class TableWindow(QMainWindow):
         # Add buttons
         button_layout = QHBoxLayout()
         self.button1 = QPushButton("Switch Chart Mode")
+        self.button1.setFont(big_font)
         def switch_chart_mode():
             self.chart_mode=self.chart_modes[(self.chart_modes.index(self.chart_mode)+1)%len(self.chart_modes)]
             self.refresh_chart()
@@ -141,6 +159,7 @@ class TableWindow(QMainWindow):
         # add title to the text box
         self.text_box_title = QTextEdit()
         self.text_box_title.setText("AI PROMPT BELOW")
+        self.text_box_title.setFont(big_font)
         self.text_box_title.setReadOnly(True)
         left_layout.addWidget(self.text_box_title)
         # center the title and make the box small
@@ -149,15 +168,18 @@ class TableWindow(QMainWindow):
 
         # add a text box entry
         self.text_box = QTextEdit()
+        self.text_box.setFont(big_font)
         left_layout.addWidget(self.text_box)
 
         # ai processing button called Rate Companies, below the text box entry
         self.button2 = QPushButton("Rate Companies")
+        self.button2.setFont(big_font)
         self.button2.clicked.connect(self.rate_companies)
         left_layout.addWidget(self.button2)
 
         # add button to clear ranks
         self.button3 = QPushButton("Clear Ranks")
+        self.button3.setFont(big_font)
         self.button3.clicked.connect(self.clear_ranks)
         left_layout.addWidget(self.button3)
 
@@ -182,47 +204,30 @@ class TableWindow(QMainWindow):
         self.refresh_chart()
 
     def periodic_updates(self):
-        # # pass
-        # if self.update_index==0:
-        #     for row in range(self.table.rowCount()):
-        #         self.table.setItem(row, 0, NumericTableWidgetItem(0))
-        # self.table.setItem(self.update_index, 0, NumericTableWidgetItem(assert_attribute.company_rank()))
-        # self.update_index+=1
-        # self.table.sortItems(self.RANK_column, Qt.DescendingOrder)         
 
-        # shared_dict["ratings"]+=[5]
         shared_dict_length=len(shared_dict["ratings"])
         if (shared_dict_length>0) and (shared_dict_length!=len(self.records)):
             while self.update_index<shared_dict_length:
                 rating=shared_dict["ratings"][self.update_index]
                 self.table.setItem(self.update_index, 0, NumericTableWidgetItem(rating))
-                # update the color of that row to be green if the rating is 5
-                # if rating==5:
-                #     self.table.item(self.update_index, 0).setBackground(Qt.green)
-                
-
                 self.update_index+=1
                 self.table.sortItems(self.RANK_column, Qt.DescendingOrder)
-            # shared_dict[self.update_index]
-            # self.table.setItem(self.update_index, 0, NumericTableWidgetItem(assert_attribute.company_rank()))
-            # self.update_index+=1
-            # self.table.sortItems(self.RANK_column, Qt.DescendingOrder) 
 
         # iterate over all rows of table
         for row in range(self.table.rowCount()):
             item=self.table.item(row, 0)
             if item.value==5: #light green
-                self.table.item(row, 0).setBackground(Qt.green)
+                self.table.item(row, 0).setBackground(customColors.green)
                 if row not in self.high_rank_rows:
                     self.high_rank_rows.append(row)
             elif item.value==4: #light blue
-                self.table.item(row, 0).setBackground(Qt.cyan)
+                self.table.item(row, 0).setBackground(customColors.yellow_green)
             elif item.value==3: #light yellow
-                self.table.item(row, 0).setBackground(Qt.yellow)
+                self.table.item(row, 0).setBackground(customColors.yellow)
             elif item.value==2: #light red
-                self.table.item(row, 0).setBackground(Qt.darkYellow)
+                self.table.item(row, 0).setBackground(customColors.orange)
             elif item.value==1: #light orange
-                self.table.item(row, 0).setBackground(Qt.red)
+                self.table.item(row, 0).setBackground(customColors.red)
             else:
                 self.table.item(row, 0).setBackground(Qt.darkRed)
 
@@ -257,6 +262,16 @@ class TableWindow(QMainWindow):
         headers=["rank"]+list(self.table_headers.keys())
         self.table.setHorizontalHeaderLabels(headers)
 
+        # Set larger font for horizontal header
+        header_font = QFont()
+        header_font.setPointSize(16)  # Increase font size for headers
+        header_font.setBold(True)
+        self.table.horizontalHeader().setFont(header_font)
+        content_font = QFont()
+        content_font.setPointSize(15)
+        content_font.setBold(True)
+
+
         for i, row in enumerate(self.records):
             self.table.setItem(i, 0, NumericTableWidgetItem(0))
             for j, item in enumerate(row):
@@ -271,6 +286,7 @@ class TableWindow(QMainWindow):
                 if isinstance(item, (int, float)):
                     table_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
                 
+                table_item.setFont(content_font)
                 self.table.setItem(i, j+1, table_item)
 
         self.cb_rank_column = headers.index('cb_rank')
@@ -373,12 +389,6 @@ class TableWindow(QMainWindow):
             self.table.model().setData(index, 0)
             self.table.item(row, 0).setBackground(Qt.darkRed)
 
-        # loop over table rows and clear the ranks
-        # time.sleep(0.1)
-        # for row in range(self.table.rowCount()):
-        #     self.table.setItem(row, 0, NumericTableWidgetItem(0))
-
-
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
@@ -409,8 +419,3 @@ if __name__ == "__main__":
     window = TableWindow(cur, records, industry_records, shared_dict)
     window.show()
     sys.exit(app.exec_())
-
-
-
-
- 
