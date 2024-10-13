@@ -1,0 +1,77 @@
+ETHAN LOWE
+PROGRAMMER
+
+
+
+SKILLS
+Python, TensorFlow, Pytorch
+AWS, JavaScript, Mobile App Development, 
+C, C++, PLC Programming
+Electric Circuits
+
+
+
+CONTACT INFO
+Website: https://github.com/ehlowe
+
+
+
+PERSONAL PROJECTS
+Launched website for Stream Recaps: Uses
+AI to process longform content into a
+visualization, automated for a popular live
+streamer’s streams. (Python, Django, React,
+AWS).
+Conversational Skeleton Head: Made
+Halloween skeleton head that turns and
+tracks trick or treaters, comments on their
+outfits, and talks conversationally using
+LLMs.
+AI vision based ‘Vision-Tag’: Built two
+working prototypes to use AI vision for hit
+registration in 1v1 game like laser tag. 
+Google Drive Smart Search: Developed
+personal tool to query my google drive’s
+documents by a description of what I want
+using vector embeddings.
+
+
+
+WORK HISTORY
+Bridgestone Americas, Trenton, SC 
+2022-05 - 2022-12
+Electrical Engineering Co-op
+Saving $300k/year in scrapped tires by building a
+green tire pressure sensing algorithm to alert and
+alarm for out-of-tolerance pressures.
+Saving $100k/year in electricity after using a motor
+energy monitoring program I wrote to find
+inefficiencies. (Python).
+Proving the feasibility of an AI vision system to
+detect whether a tire curing assembly is locked
+before machine activation.
+
+Armada IQ, Charlotte, NC
+2023-11 - 2024-3
+AI Engineering Contractor
+Submitted xtechsearch grant proposal on an AI
+powered therapist bot for the army.
+Built backend and chatbot for a cognitive behavioral
+therapy mobile app. (Python, Django).
+Made demo analyzing soccer matches with computer
+vision and visualizing the field.
+
+Linkt, Austin, TX
+2024-4 - 2024-6
+Backend Development Contractor
+Built  backend and did prompting for an Etsy AI
+generated listings tool. (Python, FastApi).
+
+
+
+EDUCATION
+Clemson University
+GPA: 3.5, SC Life Scholarship Recipient
+IEEE-HKN Member
+2020-06 - 2023-05 Bachelor of Science: Computer Engineering
+(Incomplete)

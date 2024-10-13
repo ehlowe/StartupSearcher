@@ -1,0 +1,10 @@
+/env
+__pycache__
+
+.env
+
+/old
+
+/raw_data_maker
+raw_crunchbase_data.json
+
