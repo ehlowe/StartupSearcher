@@ -1,8 +1,8 @@
-# AI assisted startup job search
+# Startup Search Tool
 
-This project takes crunchbase data and allows the user to rate companies on a scale of 1-5 with any given input criteria. You can also sort based on industry, employee count, last funding type, and crunchbase rank.
+This project takes crunchbase data and allows the user to rate companies on a scale of 0-5 with any given input criteria. It also has a pie chart on the left side shows the distribution of employee count, industry, or funding status for the 5* rating companies.
 
-This is how the database works:
-Tables:
-- crunchbase
-- industryconnections
+It uses a PostgreSQL database, PyQt gui, and gpt-4o-mini for ratings.
+
+https://github.com/user-attachments/assets/8fec1a61-645b-4d6f-bfa6-0fe76c3f47f5
+
