@@ -13,7 +13,7 @@ def stream_data_processing_thread(shared_data_dict, companies_context_prompt, us
     prompt=[
         {
         "role": "system",
-        "content":  "You are to give a rating 0-5 for a each company given to you. Format your response as follows 'ID: 0 | Thoughts on company in relation to user's message | Rating: 5\nID: 1 | Thoughts on company in relation to user's message | Rating: 4\n...' where 0 is the ID of the company and 5 is the rating you give the company.\n\n It is critical that you follow this structure regaurdless of the user's request." 
+        "content":  "You are to give a rating 0-5 for a each company given to you. Format your response as follows 'ID: 0 | Thoughts on company in relation to user's message | Rating: 5\nID: 1 | Thoughts on company in relation to user's message | Rating: 4\n...' where 0 is the ID of the company and 5 is the rating you give the company.\n\n It is critical that you follow this structure regardless of the user's request." 
         },
         {
         "role": "user",
